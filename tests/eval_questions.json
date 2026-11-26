@@ -10,7 +10,8 @@
       71
     ],
     "should_abstain": false,
-    "notes": "decision reversed twice; the latest one counts"
+    "notes": "decision reversed twice; the latest one counts",
+    "false_premise": false
   },
   {
     "id": 2,
@@ -23,7 +24,8 @@
       90
     ],
     "should_abstain": false,
-    "notes": "handoff is only final when accepted (L59), not when asked (L57)"
+    "notes": "handoff is only final when accepted (L59), not when asked (L57)",
+    "false_premise": false
   },
   {
     "id": 3,
@@ -36,7 +38,8 @@
       85
     ],
     "should_abstain": false,
-    "notes": "three dates over time; the last correction wins"
+    "notes": "three dates over time; the last correction wins",
+    "false_premise": false
   },
   {
     "id": 4,
@@ -50,7 +53,8 @@
       87
     ],
     "should_abstain": false,
-    "notes": "derived deadline; nobody announced it directly; 'shayad' is only a maybe"
+    "notes": "derived deadline; nobody announced it directly; 'shayad' is only a maybe",
+    "false_premise": false
   },
   {
     "id": 5,
@@ -63,7 +67,8 @@
       89
     ],
     "should_abstain": false,
-    "notes": "repeated promises are not completions; the chat ends on 12/11"
+    "notes": "repeated promises are not completions; the chat ends on 12/11",
+    "false_premise": false
   },
   {
     "id": 6,
@@ -78,7 +83,8 @@
       102
     ],
     "should_abstain": false,
-    "notes": "the correct answer is 'unassigned'; the system must not name an owner"
+    "notes": "the correct answer is 'unassigned'; the system must not name an owner",
+    "false_premise": false
   },
   {
     "id": 7,
@@ -93,7 +99,8 @@
       91
     ],
     "should_abstain": false,
-    "notes": "ownership collected from several handoffs"
+    "notes": "ownership collected from several handoffs",
+    "false_premise": false
   },
   {
     "id": 8,
@@ -107,7 +114,8 @@
       102
     ],
     "should_abstain": false,
-    "notes": "Hinglish question; 'main' means 'I'; 15 Nov is a promise, not a completion"
+    "notes": "Hinglish question; 'main' means 'I'; 15 Nov is a promise, not a completion",
+    "false_premise": false
   },
   {
     "id": 9,
@@ -119,18 +127,22 @@
       66
     ],
     "should_abstain": false,
-    "notes": "decision with a rejected option"
+    "notes": "decision with a rejected option",
+    "false_premise": false
   },
   {
     "id": 10,
     "question": "Priya abhi kis task pe kaam kar rahi hai?",
-    "expected_answer": "Seller dashboard (L63, L94). She finished the listings UI and filters on 26/10 (L63). She sent two logo options on 12/11 (L103).",
+    "expected_answer": "Seller dashboard (L63, L94). She finished the listings UI and filters on 26/10 (L63). On 12/11 she shared two logo options (L103) and Meera said she prefers the second, blue one (L106).",
     "evidence_lines": [
       63,
-      94
+      94,
+      103,
+      106
     ],
     "should_abstain": false,
-    "notes": "Hinglish question; current task vs finished task"
+    "notes": "Hinglish question; current task vs finished task",
+    "false_premise": false
   },
   {
     "id": 11,
@@ -142,12 +154,13 @@
       45
     ],
     "should_abstain": false,
-    "notes": "cheaper option chosen; the chat does not say who paid back whom"
+    "notes": "cheaper option chosen; the chat does not say who paid back whom",
+    "false_premise": false
   },
   {
     "id": 12,
     "question": "Which tasks are unassigned, unfinished, or have no known status?",
-    "expected_answer": "Unassigned: search (L49, L96). Unfinished: tests (Rohan, pending, L89), chat (Kabir, 70%, L90), payments webhook (Kabir, L91), seller dashboard (Priya, in progress, L94), deployment (Aarav, promised 15 Nov, no confirmation, L88). No known status: Meera's report and PPT (L73). Done: auth (L90), listings UI and filters (L63), domain (L45), schema v2 (L80).",
+    "expected_answer": "Unassigned: search (L49, L96). Unfinished: tests (Rohan, still pending, L89); chat (Kabir, 70%, L90); payments webhook (Kabir, L91); seller dashboard (Priya, in progress, L94); deployment (Aarav planned it for 15 Nov, L88, but it is unconfirmed because the chat ends on 12 Nov). Unknown status: Meera owns report + PPT (L73), but the chat gives no progress update. Done: auth (L90), listings UI and filters (L63), domain (L45), schema v2 (L80).",
     "evidence_lines": [
       45,
       63,
@@ -161,7 +174,8 @@
       96
     ],
     "should_abstain": false,
-    "notes": "needs the whole chat, not one lookup; the hardest question"
+    "notes": "needs the whole chat, not one lookup; owner known but status unknown is different from unassigned",
+    "false_premise": false
   },
   {
     "id": 13,
@@ -169,18 +183,72 @@
     "expected_answer": "The chat doesn't say. It only shows that the meeting was planned for Saturday 14 Nov at 4 PM with search and deployment status on the agenda (L97, L102), and the chat ends on 12 Nov.",
     "evidence_lines": [],
     "should_abstain": true,
-    "notes": "event after the end of the chat"
+    "notes": "event after the end of the chat",
+    "false_premise": false
   },
   {
     "id": 14,
     "question": "Why did Aarav switch the project to AWS?",
-    "expected_answer": "He didn't. Aarav only asked if anyone had AWS credits (L64); Meera advised against AWS (L65) and Aarav chose Render (L66). The system must correct the false premise.",
+    "expected_answer": "He didn't switch to AWS. Aarav only asked whether anyone had AWS credits (L64); Meera warned that AWS can bill even on the free tier (L65), and Aarav chose Render (L66). The answer must correct the false premise.",
     "evidence_lines": [
       64,
       65,
       66
     ],
+    "should_abstain": false,
+    "notes": "false premise: the chat has enough evidence to correct it, so this is not an abstention",
+    "false_premise": true
+  },
+  {
+    "id": 15,
+    "question": "Did Rohan finish authentication?",
+    "expected_answer": "No. Rohan did about 60% (L57) and handed it to Kabir on 24/10 because he was overloaded; Kabir accepted (L59) and reported it done and merged on 10/11 (L90).",
+    "evidence_lines": [
+      57,
+      59,
+      90
+    ],
+    "should_abstain": false,
+    "false_premise": false,
+    "notes": "original owner is not the one who completed it"
+  },
+  {
+    "id": 16,
+    "question": "Is Razorpay fully integrated?",
+    "expected_answer": "Partly. Kabir integrated Razorpay in test mode and checkout works (L67); the payments webhook is still pending (L91). The chat does not mention a live (non-test) setup.",
+    "evidence_lines": [
+      67,
+      71,
+      91
+    ],
+    "should_abstain": false,
+    "false_premise": false,
+    "notes": "partly done is not done"
+  },
+  {
+    "id": 17,
+    "question": "Who actually paid for the domain?",
+    "expected_answer": "Aarav bought it (L45). Meera suggested splitting the cost among the 5 members when the price looked like Rs 800 (L41), but no message says the split happened or that anyone paid Aarav back, so the chat does not say who finally paid.",
+    "evidence_lines": [
+      41,
+      43,
+      45
+    ],
     "should_abstain": true,
-    "notes": "false premise: the system must not play along"
+    "false_premise": false,
+    "notes": "who bought it is known; who ultimately paid is not stated"
+  },
+  {
+    "id": 18,
+    "question": "Was the project deployed on Render?",
+    "expected_answer": "The chat doesn't confirm it. Render was chosen (L66) and Aarav said on 09/11 he was deploying and it would be ready by 15 Nov (L88), but no later message confirms it is live; deployment status is on the meeting agenda (L102).",
+    "evidence_lines": [
+      66,
+      88,
+      102
+    ],
+    "should_abstain": true,
+    "false_premise": false,
+    "notes": "planned vs confirmed"
   }
 ]
