@@ -99,8 +99,13 @@
       91
     ],
     "should_abstain": false,
-    "notes": "ownership collected from several handoffs",
-    "false_premise": false
+    "notes": "ownership collected from several handoffs | required_facts loosened after run 2: question asks which tasks, not their status",
+    "false_premise": false,
+    "required_facts": [
+      "Kabir owns chat",
+      "Kabir owns auth",
+      "Kabir owns payments"
+    ]
   },
   {
     "id": 8,
@@ -128,7 +133,11 @@
     ],
     "should_abstain": false,
     "notes": "decision with a rejected option",
-    "false_premise": false
+    "false_premise": false,
+    "required_facts": [
+      "Render was chosen",
+      "AWS was rejected"
+    ]
   },
   {
     "id": 10,
@@ -142,7 +151,10 @@
     ],
     "should_abstain": false,
     "notes": "Hinglish question; current task vs finished task",
-    "false_premise": false
+    "false_premise": false,
+    "required_facts": [
+      "Priya is working on the seller dashboard"
+    ]
   },
   {
     "id": 11,
@@ -155,7 +167,11 @@
     ],
     "should_abstain": false,
     "notes": "cheaper option chosen; the chat does not say who paid back whom",
-    "false_premise": false
+    "false_premise": false,
+    "required_facts": [
+      "The domain was bought on Namecheap",
+      "The cost was Rs 650"
+    ]
   },
   {
     "id": 12,
@@ -175,7 +191,16 @@
     ],
     "should_abstain": false,
     "notes": "needs the whole chat, not one lookup; owner known but status unknown is different from unassigned",
-    "false_premise": false
+    "false_premise": false,
+    "required_facts": [
+      "Search is unassigned",
+      "Tests (Rohan) are still pending",
+      "Chat (Kabir) is unfinished at 70%",
+      "Payments webhook (Kabir) is pending",
+      "Seller dashboard (Priya) is in progress",
+      "Deployment is planned for 15 Nov but not confirmed",
+      "Report and PPT (Meera) have no status update in the chat"
+    ]
   },
   {
     "id": 13,
@@ -223,7 +248,11 @@
     ],
     "should_abstain": false,
     "false_premise": false,
-    "notes": "partly done is not done"
+    "notes": "partly done is not done",
+    "required_facts": [
+      "Razorpay is only partly integrated: test mode works",
+      "The payments webhook is still pending"
+    ]
   },
   {
     "id": 17,
@@ -236,7 +265,11 @@
     ],
     "should_abstain": true,
     "false_premise": false,
-    "notes": "who bought it is known; who ultimately paid is not stated"
+    "notes": "who bought it is known; who ultimately paid is not stated",
+    "required_facts": [
+      "Aarav bought the domain",
+      "The chat does not say who ultimately paid or whether the cost was split"
+    ]
   },
   {
     "id": 18,
