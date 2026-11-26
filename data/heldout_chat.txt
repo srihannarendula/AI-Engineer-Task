@@ -1,0 +1,37 @@
+01/03/26, 10:05 AM - Ravi: guys, let's form a team for the inter-college hackathon.
+01/03/26, 10:07 AM - Sam: I'll handle backend/API.
+01/03/26, 10:09 AM - Isha: I'll do UI design and slides.
+01/03/26, 10:12 AM - Ravi: Since registrations close soon, let's do the event online.
+01/03/26, 10:15 AM - Sam: online works for me.
+01/03/26, 10:18 AM - Isha: Wait, college lab is available. Better to work together there.
+01/03/26, 10:22 AM - Ravi: Final decision: we'll work from the college lab, not online.
+01/03/26, 10:30 AM - Sam: Backend repo is created. I'll start the API.
+02/03/26, 09:10 AM - Dev: Sam, you're overloaded. I can take over backend if you want.
+02/03/26, 09:12 AM - Sam: Yes, please take backend. I'll focus on dataset and testing.
+02/03/26, 09:14 AM - Dev: Done, backend is mine from now.
+02/03/26, 09:20 AM - Ravi: Neha, can you make the presentation poster by Thursday?
+02/03/26, 09:25 AM - Neha: haha that poster template looks like a wedding invitation 😂
+02/03/26, 09:40 AM - Dev: API routes are mostly ready. Auth endpoint still needs testing.
+I'll share the endpoint list after stand-up.
+02/03/26, 11:00 AM - Kiran: Website is done! pushed the whole thing.
+02/03/26, 11:08 AM - Isha: I opened it. Login button isn't working for me.
+02/03/26, 11:15 AM - Kiran: Oh, login API isn't connected yet. Only the landing page is complete.
+02/03/26, 11:20 AM - Kiran: So website is not fully finished; login integration is still pending.
+02/03/26, 12:05 PM - Sam: I'll submit the registration form by Friday.
+02/03/26, 12:07 PM - Ravi: Great, please send confirmation here once submitted.
+02/03/26, 12:10 PM - Sam: sure. btw who named our team '404 Brain Not Found' 😭
+02/03/26, 01:00 PM - Isha: We still need someone to make the poster. Any volunteers?
+02/03/26, 01:05 PM - Ravi: Neha, are you taking the poster task?
+02/03/26, 01:08 PM - Neha: That meme in the group is too good 😂
+02/03/26, 02:00 PM - Dev: Backend endpoints are implemented; auth testing is not done yet.
+02/03/26, 02:10 PM - Sam: Dataset cleaned. I'll prepare test cases tonight.
+02/03/26, 03:00 PM - Ravi: Did anyone pay the hackathon registration fee?
+02/03/26, 03:04 PM - Isha: I don't know, I only filled the team details.
+02/03/26, 03:10 PM - Ravi: okay, let's check the payment portal later.
+02/03/26, 04:00 PM - Kiran: The landing page looks good on mobile too.
+03/03/26, 09:00 AM - Dev: Auth endpoint is working locally, but I haven't tested the full flow.
+03/03/26, 09:10 AM - Sam: I'll run the test cases after lunch.
+03/03/26, 09:15 AM - Isha: Slides are almost ready; demo screenshots are missing.
+03/03/26, 09:20 AM - Ravi: Who can take the demo screenshots?
+03/03/26, 09:22 AM - Sam: I'll check after testing. Also, the lab Wi-Fi is slower than my grandma's scooter.
+03/03/26, 09:30 AM - Dev: I pushed the backend branch. Full integration still needs to happen.
