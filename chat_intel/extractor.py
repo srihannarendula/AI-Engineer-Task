@@ -35,6 +35,11 @@ Rules:
 9. Output ONLY the JSON array."""
 
 
+def extraction_model() -> str:
+    """Extraction runs once per chat and is cached, so it can use a stronger model."""
+    return os.environ.get("EXTRACTION_MODEL") or os.environ.get("LLM_MODEL", DEFAULT_MODEL)
+
+
 @dataclass
 class ExtractionResult:
     events: List[Event]
@@ -72,7 +77,7 @@ def _event_key(e: Event):
 
 
 def _cache_path(messages: List[Message], cache_dir: str) -> Path:
-    model = os.environ.get("LLM_MODEL", DEFAULT_MODEL)
+    model = extraction_model()
     digest = hashlib.sha1(
         json.dumps([[m.id, m.sender, m.text] for m in messages] + [model, PROMPT_VERSION]).encode()
     ).hexdigest()[:16]
@@ -96,7 +101,7 @@ def extract_events(messages: List[Message], window: int = 40, overlap: int = 8,
             hint = "Task names already in use: " + ", ".join(known_tasks) + "\n\n"
         prompt = f"{hint}CHAT SEGMENT:\n{build_transcript(chunk)}\n\nJSON array of events:"
         try:
-            proposals = _parse_json_list(generate(prompt, system=SYSTEM_PROMPT, json_mode=True))
+            proposals = _parse_json_list(generate(prompt, system=SYSTEM_PROMPT, json_mode=True, model=extraction_model()))
         except (ValueError, TypeError) as err:
             rejected.append({"raw": None, "reason": f"unreadable model reply for one window: {err}"})
             continue

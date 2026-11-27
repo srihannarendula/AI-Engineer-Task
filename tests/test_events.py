@@ -87,3 +87,18 @@ def test_compound_task_names_are_rejected_and_names_lowercased():
     assert event.task == "search"
     event, _ = validate_event(dict(raw, task="report/PPT", quote="Meera - payments + report/PPT"), msgs)
     assert event.task == "report/ppt"          # a slash is one deliverable, not a list
+
+
+def test_extraction_uses_its_own_model_and_cache_key(monkeypatch, tmp_path):
+    msgs = parse_chat(CHAT)
+    seen = []
+    monkeypatch.setattr(ex, "generate", lambda p, system=None, **kw: seen.append(kw.get("model")) or "[]")
+    monkeypatch.setenv("EXTRACTION_MODEL", "big-model")
+    ex.extract_events(msgs, cache_dir=str(tmp_path))
+    assert seen and set(seen) == {"big-model"}
+    path_big = ex._cache_path(msgs, str(tmp_path))
+    monkeypatch.setenv("EXTRACTION_MODEL", "other-model")
+    assert ex._cache_path(msgs, str(tmp_path)) != path_big      # different model, different cache
+    monkeypatch.delenv("EXTRACTION_MODEL")
+    monkeypatch.setenv("LLM_MODEL", "plain-model")
+    assert ex.extraction_model() == "plain-model"               # falls back to LLM_MODEL

@@ -38,14 +38,14 @@ def _get_client():
 
 
 def generate(prompt: str, system: str = None, json_mode: bool = False,
-             max_retries: int = 4) -> str:
+             max_retries: int = 4, model: str = None) -> str:
     """Send a prompt to the model and return its text answer.
 
     temperature=0 makes answers as repeatable as possible.
     json_mode=True asks the model to reply with valid JSON only.
     Temporary errors (429/5xx) are retried with a growing wait.
     """
-    model = os.environ.get("LLM_MODEL", DEFAULT_MODEL)
+    model = model or os.environ.get("LLM_MODEL", DEFAULT_MODEL)
     config = types.GenerateContentConfig(
         system_instruction=system,
         temperature=0,
