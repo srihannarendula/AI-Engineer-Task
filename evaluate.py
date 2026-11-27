@@ -12,6 +12,7 @@ from pathlib import Path
 
 from chat_intel.evaluation import render_report, run_evaluation, summarize
 from chat_intel.parser import parse_chat
+from run import build_overview
 
 
 def main():
@@ -22,6 +23,8 @@ def main():
     p.add_argument("--only", help="comma-separated question ids, e.g. 5,12,14")
     p.add_argument("--no-judge", action="store_true", help="skip the judge model call")
     p.add_argument("--pause", type=float, default=1.0, help="seconds between API calls")
+    p.add_argument("--no-state", action="store_true", help="answer from the raw chat only (old single-call mode)")
+    p.add_argument("--refresh", action="store_true", help="re-extract events instead of using the cache")
     args = p.parse_args()
 
     try:
@@ -43,7 +46,8 @@ def main():
         print(f"Q{r.qid:<3} auto={auto:<5} judge={r.verdict:<10} {r.question}")
 
     try:
-        results = run_evaluation(messages, questions, use_judge=not args.no_judge,
+        overview = None if args.no_state else build_overview(messages, args.refresh)
+        results = run_evaluation(messages, questions, use_judge=not args.no_judge, overview=overview,
                                  pause=args.pause, on_result=show)
     except RuntimeError as err:
         sys.exit(f"Error: {err}")

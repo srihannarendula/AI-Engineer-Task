@@ -29,7 +29,7 @@ def test_parse_judge():
 def test_run_evaluation_and_report(monkeypatch):
     msgs = parse_chat("data/team_chat.txt")
     answers = {"q1": Answer("Razorpay [L71]", [71], []), "q2": Answer("They chose Django [L500]", [], [500])}
-    monkeypatch.setattr(ev, "ask", lambda m, question: answers[question])
+    monkeypatch.setattr(ev, "ask", lambda m, question, overview=None: answers[question])
     monkeypatch.setattr(ev, "generate", lambda *a, **k: '{"verdict": "correct", "reason": "fine"}')
     questions = [dict(Q_NORMAL, question="q1"), dict(Q_ABSTAIN, question="q2")]
     results = ev.run_evaluation(msgs, questions, pause=0)
@@ -43,7 +43,7 @@ def test_run_evaluation_and_report(monkeypatch):
 
 def test_one_failing_question_does_not_stop_the_run(monkeypatch):
     msgs = parse_chat("data/team_chat.txt")
-    def flaky(m, question):
+    def flaky(m, question, overview=None):
         if question == "boom":
             raise ValueError("model exploded")
         return Answer("ok [L71]", [71], [])
@@ -52,3 +52,15 @@ def test_one_failing_question_does_not_stop_the_run(monkeypatch):
                                 use_judge=False, pause=0)
     assert results[0].verdict == "error" and "exploded" in results[0].error
     assert results[1].auto_pass is True
+
+
+def test_overview_is_passed_through_to_ask(monkeypatch):
+    msgs = parse_chat("data/team_chat.txt")
+    seen = []
+    def spy(m, question, overview=None):
+        seen.append(overview)
+        return Answer("ok [L71]", [71], [])
+    monkeypatch.setattr(ev, "ask", spy)
+    ev.run_evaluation(msgs, [dict(Q_NORMAL, question="a")], use_judge=False, pause=0, overview="STATE")
+    ev.run_evaluation(msgs, [dict(Q_NORMAL, question="b")], use_judge=False, pause=0)
+    assert seen == ["STATE", None]

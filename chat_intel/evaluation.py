@@ -133,12 +133,12 @@ def _any_missing(raw: str) -> bool:
         return False
 
 
-def run_evaluation(messages, questions: List[dict], use_judge: bool = True,
+def run_evaluation(messages, questions: List[dict], use_judge: bool = True, overview: Optional[str] = None,
                    pause: float = 1.0, on_result: Callable = None) -> List[Result]:
     results = []
     for q in questions:
         try:
-            answer = ask(messages, q["question"])
+            answer = ask(messages, q["question"], overview=overview)
             evidence_ok, abstained, auto_pass = auto_checks(q, answer.text, answer.cited, answer.invalid)
             result = Result(q["id"], q["question"], q["expected_answer"], answer.text,
                             answer.cited, answer.invalid, q.get("evidence_lines", []),
