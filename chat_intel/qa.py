@@ -6,7 +6,7 @@ evidence, so the user never has to trust the model's quoting.
 """
 import re
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from chat_intel.llm import generate
 from chat_intel.models import Message, MessageKind
@@ -25,6 +25,15 @@ Rules:
 5. Put the supporting line numbers right after each claim, like [L90]. Cite only line numbers that appear in the chat.
 6. If the chat does not clearly answer, say "The chat doesn't say" and then state what the chat DOES show, with citations. Do not invent an owner, a status or a date.
 7. Reply in the same language style as the question (English or Hinglish). Be short and direct."""
+
+
+STATE_RULES = """
+
+You are also given a PROJECT STATE: a summary built by code from the chat, with line numbers.
+- Use it as a guide to find the relevant messages and to see ownership, status and decision changes at a glance.
+- It can be incomplete or wrong (tasks can be missing, one topic can be split in two). The CHAT is the source of truth. If the two disagree, follow the chat.
+- A task or fact missing from the state does NOT mean it is missing from the chat. Check the chat.
+- Cite the line numbers of the chat messages that support each claim."""
 
 
 @dataclass
@@ -63,12 +72,14 @@ def extract_citations(answer_text: str, messages: List[Message]):
     return cited, invalid
 
 
-def ask(messages: List[Message], question: str) -> Answer:
+def ask(messages: List[Message], question: str, overview: Optional[str] = None) -> Answer:
+    state_part = f"PROJECT STATE (built by code, may be incomplete):\n{overview}\n\n" if overview else ""
+    system = SYSTEM_PROMPT + (STATE_RULES if overview else "")
     prompt = (
-        f"CHAT:\n{build_transcript(messages)}\n\n"
+        f"{state_part}CHAT:\n{build_transcript(messages)}\n\n"
         f"QUESTION: {question}\n\nANSWER:"
     )
-    text = generate(prompt, system=SYSTEM_PROMPT).strip()
+    text = generate(prompt, system=system).strip()
     cited, invalid = extract_citations(text, messages)
     return Answer(text, cited, invalid)
 

@@ -38,3 +38,27 @@ def test_prompt_contains_question_and_chat(monkeypatch):
     assert "QUESTION: Who owns search?" in seen["prompt"]
     assert "[L90 | 10/11/26 09:12 PM | Kabir]" in seen["prompt"]
     assert "chat doesn't say" in seen["system"]
+
+
+def test_overview_is_added_to_prompt_and_chat_stays_the_authority(monkeypatch):
+    msgs = parse_chat(CHAT)
+    seen = {}
+    def fake(prompt, system=None, **kw):
+        seen["prompt"], seen["system"] = prompt, system
+        return "x"
+    monkeypatch.setattr(qa, "generate", fake)
+    qa.ask(msgs, "Q?", overview="OPEN TASKS\n  - auth: Kabir [L59]")
+    assert "PROJECT STATE" in seen["prompt"] and "auth: Kabir [L59]" in seen["prompt"]
+    assert seen["prompt"].index("PROJECT STATE") < seen["prompt"].index("CHAT:")
+    assert "CHAT is the source of truth" in seen["system"]
+
+
+def test_no_overview_leaves_prompt_unchanged(monkeypatch):
+    msgs = parse_chat(CHAT)
+    seen = {}
+    def fake(prompt, system=None, **kw):
+        seen["prompt"], seen["system"] = prompt, system
+        return "x"
+    monkeypatch.setattr(qa, "generate", fake)
+    qa.ask(msgs, "Q?")
+    assert "PROJECT STATE" not in seen["prompt"] and "source of truth" not in seen["system"]
