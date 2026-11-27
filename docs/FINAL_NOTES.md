@@ -84,4 +84,4 @@ Overall: 16 / 18 correct with state, 17 / 18 without state.
 
 ## 8. Demo video
 
-Link to your 3-minute screen recording: ___
+Link to my 3-minute screen recording: https://youtu.be/GN9PvenDyc8?si=b2o0eSAK7tyKc5Yc
