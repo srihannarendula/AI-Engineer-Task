@@ -11,9 +11,9 @@ from chat_intel.llm import DEFAULT_MODEL, generate
 from chat_intel.models import Message, MessageKind
 from chat_intel.qa import build_transcript
 
-PROMPT_VERSION = "1"   # change when the prompt or schema changes, so old caches are ignored
+PROMPT_VERSION = "2"   # change when the prompt or schema changes, so old caches are ignored
 
-SYSTEM_PROMPT = """You read part of a WhatsApp group chat of a college project team (English + Hinglish)
+SYSTEM_PROMPT = """You read part of a WhatsApp group chat of a team working on a project (English + Hinglish)
 and extract EVENTS. Each message looks like: [L<line> | <date time> | <sender>] message
 
 Return a JSON array. Each event is one of these four types:
@@ -24,13 +24,13 @@ Return a JSON array. Each event is one of these four types:
 {"type":"deadline",   "msg_id":<line>, "what":"...", "date_text":"...", "stage":"tentative"|"confirmed", "quote":"..."}
 
 Rules:
-1. "msg_id" is the line number of the message the event comes from (the number after L). "quote" must be copied EXACTLY from that message (a short piece, at most 12 words). One message can give several events, e.g. a task list gives one assignment per line; then use the same msg_id and quote that line.
-2. decision: stage "agreed" only if the team clearly settled it ("final", "decided", "agreed", "deal"). A suggestion or question ("X bana lo?") is "proposed". Always include decisions that were later reversed.
-3. assignment: "person" is the one who would DO the work. "Main - deployment" means the sender does deployment. "assigned" = told or listed; "requested" = asking someone to take it ("Kabir le sakta hai?"); "accepted" = agreeing to take it ("le leta hoon", "deal"); "declined" = refusing a request; "dropped" = giving up a task they had.
-4. status: "done" only when the person says it is finished. A promise ("kal tak kar dunga", "I'll do by Sunday") is "promised", even if it is repeated. Work being done now is "in_progress". The word "done" alone can mean agreement, so read the context before choosing.
-5. deadline: copy the date as written in the chat for "date_text" (like "26 Nov" or "this Sunday"); do not calculate dates. "tentative" for maybe/shayad/question, "confirmed" otherwise.
-6. Use the SAME short task name every time for the same task (lowercase, e.g. "auth", "search", "payments", "tests", "deployment"). If a list of task names already in use is given, reuse those names.
-7. Person names exactly as they appear in the chat.
+1. msg_id = line number of the message (the number after L). quote = a short exact piece (max 12 words) copied from THAT message. One message can give several events; use the same msg_id and quote the relevant part each time.
+2. One task = one deliverable. NEVER put "+", "&" or "and" in a task name. Split lists into separate events: a line like "Sam - login + search" gives two assignments, "login" and "search". Likewise, if someone keeps one part and gives up another ("I'll do A, someone else take B"), give one event per part (accepted A, dropped B). Use the same short lowercase name every time for the same task. If a list of task names already in use is given, reuse them.
+3. decision: for choices the team makes (tools, plans, methods). Include suggestions as stage "proposed" and settled choices as "agreed" ("final", "decided", "deal", or the person who owns that part states it). Keep every decision, even ones that were later reversed. A reply that agrees ("yes", "haan", "ok") to an earlier proposal is its own "agreed" event at the reply's line. Dates are NOT decisions: use deadline events for them.
+4. assignment: person = who would DO the work. "Main - <task>" or "I'll do <task>" means the sender does it. assigned = told or listed; requested = asking someone to take it; accepted = agreeing to take it; declined = refusing a request; dropped = giving up a task they had. A message that only says someone is busy or postpones the topic is not an acceptance.
+5. status: done = clearly finished. If the message says first version, partly, or that something remains, use in_progress. A promise ("will do by tomorrow") is promised, even when repeated; a missed promise followed by a new promise is promised again. blocked = something outside the person stops the work. A person's own promised date for their task goes in "note" of a promised status, not in a deadline event.
+6. deadline: only for team-wide dates (demo, submission, report, meeting). Emit one event per date mentioned. date_text is copied as written ("26 Nov", "this Sunday"); never calculate dates. tentative = maybe/"shayad"/question; confirmed = stated as fact, or agreed by a reply.
+7. Person names exactly as written in the chat.
 8. Ignore greetings, jokes, photos and small talk. If a segment has no events, return [].
 9. Output ONLY the JSON array."""
 

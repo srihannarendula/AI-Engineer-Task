@@ -75,3 +75,15 @@ def test_unreadable_reply_is_recorded_not_fatal(monkeypatch, tmp_path):
     monkeypatch.setattr(ex, "generate", lambda *a, **k: "sorry, I cannot")
     result = ex.extract_events(parse_chat(CHAT), cache_dir=str(tmp_path))
     assert result.events == [] and len(result.rejected) == 3
+
+
+def test_compound_task_names_are_rejected_and_names_lowercased():
+    msgs = by_id()
+    raw = {"type": "assignment", "msg_id": 17, "task": "search + chat", "person": "Kabir",
+           "action": "assigned", "quote": "Kabir - search + chat between buyer/seller"}
+    event, reason = validate_event(raw, msgs)
+    assert event is None and "compound" in reason
+    event, _ = validate_event(dict(raw, task="Search", quote="Kabir - search"), msgs)
+    assert event.task == "search"
+    event, _ = validate_event(dict(raw, task="report/PPT", quote="Meera - payments + report/PPT"), msgs)
+    assert event.task == "report/ppt"          # a slash is one deliverable, not a list

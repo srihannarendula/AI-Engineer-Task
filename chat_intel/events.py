@@ -89,6 +89,12 @@ def validate_event(raw: dict, by_id: Dict[int, Message]) -> Tuple[Optional[Event
         if t == etype and fields[field] not in allowed:
             return None, f"{field}={fields[field]!r} is not one of {sorted(allowed)}"
 
+    # Code rule: task names are lowercase, and one task = one deliverable.
+    if fields["task"]:
+        fields["task"] = fields["task"].lower()
+        if re.search(r"\s(\+|&|and)\s", fields["task"]):
+            return None, f"compound task name {fields['task']!r} (one event per task)"
+
     # Code rule: a status update with no named person is about the sender.
     if etype == "status" and not fields["person"]:
         fields["person"] = message.sender
