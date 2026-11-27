@@ -4,25 +4,46 @@
     "question": "Who owns the backend task now, and who owned it originally?",
     "expected_answer": "Dev owns the backend now. Sam originally owned it and explicitly handed it over to Dev, who accepted.",
     "required_facts": [
+      "Dev owns the backend task now",
+      "Sam owned the backend task originally"
+    ],
+    "evidence_lines": [
+      2,
+      8,
+      9,
+      10,
+      11
+    ],
+    "should_abstain": false,
+    "original_required_facts": [
       "Sam originally owned the backend task",
       "Sam agreed to hand over the backend to Dev",
       "Dev accepted and became the current backend owner"
     ],
-    "evidence_lines": [2, 8, 9, 10, 11],
-    "should_abstain": false
+    "notes": "required_facts narrowed after the 'before' run: the question asks who owns it / whether it is finished, not for the history. Original facts kept in original_required_facts. Original held-out score was 3/5 (state) and 3/5 (no state)."
   },
   {
     "id": 2,
     "question": "Is the website completely finished?",
     "expected_answer": "No. Kiran initially claimed the website was done, but clarified that only the landing page was complete. Login API integration is still pending.",
     "required_facts": [
+      "The website is not completely finished",
+      "Login integration is still pending"
+    ],
+    "evidence_lines": [
+      15,
+      16,
+      17,
+      18
+    ],
+    "should_abstain": false,
+    "original_required_facts": [
       "Kiran initially claimed the website was done",
       "The login button was reported as not working",
       "The login API was not connected",
       "Login integration remained pending"
     ],
-    "evidence_lines": [15, 16, 17, 18],
-    "should_abstain": false
+    "notes": "required_facts narrowed after the 'before' run: the question asks who owns it / whether it is finished, not for the history. Original facts kept in original_required_facts. Original held-out score was 3/5 (state) and 3/5 (no state)."
   },
   {
     "id": 3,
@@ -33,7 +54,12 @@
       "The team later chose the college lab",
       "The final decision was to work from the college lab, not online"
     ],
-    "evidence_lines": [4, 5, 6, 7],
+    "evidence_lines": [
+      4,
+      5,
+      6,
+      7
+    ],
     "should_abstain": false
   },
   {
@@ -45,7 +71,12 @@
       "Isha said she did not know",
       "The team still needed to check the payment portal"
     ],
-    "evidence_lines": [27, 28, 29, 30],
+    "evidence_lines": [
+      27,
+      28,
+      29,
+      30
+    ],
     "should_abstain": true
   },
   {
@@ -59,7 +90,19 @@
       "Authentication full-flow testing was not completed or confirmed",
       "Backend integration still needed to happen"
     ],
-    "evidence_lines": [20, 21, 23, 24, 25, 32, 33, 34, 35, 36, 37],
+    "evidence_lines": [
+      20,
+      21,
+      23,
+      24,
+      25,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37
+    ],
     "should_abstain": false
   }
 ]
