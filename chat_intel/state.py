@@ -19,6 +19,12 @@ def _same(a: str, b: str) -> bool:
     return " ".join(re.findall(r"[a-z0-9]+", a.lower())) == " ".join(re.findall(r"[a-z0-9]+", b.lower()))
 
 
+def _similar(a: str, b: str) -> bool:
+    """Same value allowing extra words, e.g. '27 Nov' vs '27 Nov (Friday)'."""
+    x, y = _tokens(a), _tokens(b)
+    return bool(x and y and (x <= y or y <= x))
+
+
 def _canonical(name: str, known) -> str:
     """Reuse an earlier topic name if one name's words contain the other's
     (e.g. 'demo' vs 'demo day'). Otherwise this is a new topic."""
@@ -105,6 +111,8 @@ def _apply_assignment(state: ProjectState, e: Event) -> None:
         t.last_owner = who
         t.requests = [r for r in t.requests if r[0] != who]
     elif e.action == "requested":                 # asking someone does not change the owner
+        if (who, e.msg_id) in t.drops:            # same message: they are giving it up, not being asked
+            return
         t.requests.append((who, e.msg_id))
         t.trail.append((e.msg_id, f"requested: {who}"))
     elif e.action == "declined":                  # only clears that person's pending request
@@ -138,7 +146,7 @@ def _apply_decision(state: ProjectState, e: Event) -> None:
     key = _canonical(e.topic, state.decisions)
     d = state.decisions.setdefault(key, DecisionState(key))
     if e.stage == "agreed":
-        if d.current and _same(d.current, e.value):
+        if d.current and _similar(d.current, e.value):
             d.confirmations.append(e.msg_id)
             return
         if d.current:
@@ -146,7 +154,7 @@ def _apply_decision(state: ProjectState, e: Event) -> None:
         d.current, d.current_line = e.value, e.msg_id
         d.proposals = []                          # earlier proposals are now settled
     else:  # proposed
-        if d.current and _same(d.current, e.value):
+        if d.current and _similar(d.current, e.value):
             return
         d.proposals = [p for p in d.proposals if not _same(p[0], e.value)]
         d.proposals.append((e.value, e.msg_id, e.actor))
@@ -156,11 +164,11 @@ def _apply_deadline(state: ProjectState, e: Event) -> None:
     key = _canonical(e.what, state.deadlines)
     d = state.deadlines.setdefault(key, DeadlineState(key))
     if e.stage == "confirmed":
-        if d.current and not _same(d.current, e.date_text):
+        if d.current and not _similar(d.current, e.date_text):
             d.history.append((d.current, d.current_line))
         d.current, d.current_line, d.pending = e.date_text, e.msg_id, None
     else:  # tentative
-        if d.current and _same(d.current, e.date_text):
+        if d.current and _similar(d.current, e.date_text):
             return
         d.pending = (e.date_text, e.msg_id)
 

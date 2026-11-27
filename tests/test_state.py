@@ -125,3 +125,15 @@ def test_topic_names_that_drift_are_merged():
     s = build_state([ev("deadline", 1, what="demo day", date_text="4 Dec", stage="confirmed"),
                      ev("deadline", 2, what="demo", date_text="27 Nov", stage="confirmed")])
     assert list(s.deadlines) == ["demo day"] and s.deadlines["demo day"].current == "27 Nov"
+
+
+def test_request_on_same_line_as_own_drop_is_ignored():
+    s = build_state([assign(1, "k", "search"), assign(2, "k", "search", "dropped"),
+                     assign(2, "k", "search", "requested")])
+    assert s.tasks["search"].requests == []
+
+
+def test_same_date_with_extra_words_is_not_a_change():
+    dl = lambda line, date: ev("deadline", line, what="demo", date_text=date, stage="confirmed")
+    s = build_state([dl(1, "27 Nov"), dl(2, "27 Nov (Friday)")])
+    assert s.deadlines["demo"].history == []
