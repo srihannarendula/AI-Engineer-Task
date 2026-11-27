@@ -15,6 +15,13 @@ load_dotenv()
 DEFAULT_MODEL = "gemini-3.8-flash"      # override with LLM_MODEL in .env
 RETRY_CODES = {429, 500, 503, 504}      # rate limit / temporary server trouble
 
+FATAL_CODES = {400, 401, 403, 404}      # wrong key, wrong model name, no access: retrying cannot help
+
+
+class LLMError(RuntimeError):
+    """A model-setup problem, reported with a short readable message."""
+
+
 _client = None
 
 
@@ -56,4 +63,10 @@ def generate(prompt: str, system: str = None, json_mode: bool = False,
                 print(f"[llm] error {err.code}, retrying in {wait}s...")
                 time.sleep(wait)
                 continue
+            if err.code in FATAL_CODES:
+                reason = str(getattr(err, "message", err))[:200]
+                raise LLMError(
+                    f"The model request failed ({err.code}) for model '{model}': {reason}\n"
+                    "Check LLM_MODEL in your .env and that your key can use that model."
+                ) from None
             raise
